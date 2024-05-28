@@ -23,7 +23,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train a DM2FNet')
     parser.add_argument(
         '--gpus', type=str, default='0', help='gpus to use ')
-    parser.add_argument('--ckpt-path', default='./ckpt', help='checkpoint path')
+    parser.add_argument('--ckpt-path', default='./lxkckpt', help='checkpoint path')
     parser.add_argument(
         '--exp-name',
         default='O-Haze',
@@ -35,15 +35,15 @@ def parse_args():
 
 cfgs = {
     'use_physical': True,
-    'iter_num': 20000,
+    'iter_num': 4500,
     'train_batch_size': 16,
     'last_iter': 0,
-    'lr': 2e-4,
+    'lr': 5e-5,
     'lr_decay': 0.9,
     'weight_decay': 2e-5,
     'momentum': 0.9,
-    'snapshot': '',
-    'val_freq': 2000,
+    'snapshot': 'iter_8000_loss_0.04592_lr_0.000000',
+    'val_freq': 1500,
     'crop_size': 512,
 }
 
@@ -167,7 +167,7 @@ def validate(net, curr_iter, optimizer):
                 r = dehaze[i].cpu().numpy().transpose([1, 2, 0])  # data range [0, 1]
                 g = gt[i].cpu().numpy().transpose([1, 2, 0])
                 psnr = peak_signal_noise_ratio(g, r)
-                ssim = structural_similarity(g, r, data_range=1, multichannel=True,
+                ssim = structural_similarity(g, r, data_range=1, channel_axis=2,
                                              gaussian_weights=True, sigma=1.5, use_sample_covariance=False)
                 psnr_record.update(psnr)
                 ssim_record.update(ssim)
