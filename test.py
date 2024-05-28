@@ -18,18 +18,17 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 torch.manual_seed(2018)
 torch.cuda.set_device(0)
 
-ckpt_path = './ckpt'
-# exp_name = 'RESIDE_ITS'
-exp_name = 'O-Haze'
+ckpt_path = './lxkckpt'
+exp_name = 'RESIDE_ITS'
+# exp_name = 'O-Haze'
 
 args = {
-    # 'snapshot': 'iter_40000_loss_0.01230_lr_0.000000',
-    'snapshot': 'iter_19000_loss_0.04261_lr_0.000014',
+    'snapshot': 'iter_12000_loss_0.01167_lr_0.000000'
 }
 
 to_test = {
-    # 'SOTS': TEST_SOTS_ROOT,
-    'O-Haze': OHAZE_ROOT,
+    'SOTS': TEST_SOTS_ROOT,
+    # 'O-Haze': OHAZE_ROOT,
 }
 
 to_pil = transforms.ToPILImage()
@@ -84,7 +83,7 @@ def main():
                     gt = gts[i].cpu().numpy().transpose([1, 2, 0])
                     psnr = peak_signal_noise_ratio(gt, r)
                     psnrs.append(psnr)
-                    ssim = structural_similarity(gt, r, data_range=1, multichannel=True,
+                    ssim = structural_similarity(gt, r, data_range=1, channel_axis=2,
                                                  gaussian_weights=True, sigma=1.5, use_sample_covariance=False)
                     ssims.append(ssim)
                     print('predicting for {} ({}/{}) [{}]: PSNR {:.4f}, SSIM {:.4f}'
